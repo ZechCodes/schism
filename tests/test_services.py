@@ -3,7 +3,7 @@ from bevy.builder import Builder
 from contextlib import contextmanager
 from io import StringIO
 from sympyosis.app.app import App
-from sympyosis.config.config import Config
+from sympyosis.config.config import Config, ServiceConfig
 from sympyosis.services.service import Service
 from sympyosis.services.service_manager import ServiceManager
 
@@ -35,7 +35,9 @@ class ModuleDummy:
         def __init__(self):
             self.ran += 1
 
-    class ServiceB:
+    @detect_dependencies
+    class ServiceB(AutoInject):
+        config: ServiceConfig
         ran = 0
 
         def __init__(self):
@@ -44,6 +46,7 @@ class ModuleDummy:
     @detect_dependencies
     class ServiceC(AutoInject):
         service_b: "ModuleDummy.ServiceB"
+        config: ServiceConfig
 
 
 @detect_dependencies
@@ -90,3 +93,25 @@ def test_service_interdependency():
     b, c = context.get(ModuleDummy.ServiceB), context.get(ModuleDummy.ServiceC)
     assert c.service_b is b
     assert c.__bevy_context__ is not context
+
+
+def test_service_config():
+    context = Context()
+    context.add(
+        context.bind(ConfigTester)(
+            """
+            {
+                "services": [
+                    {"name": "Service B", "interface": "B.service_b:ServiceB"},
+                    {"name": "Service C", "interface": "C.service_c:ServiceC"}
+                ]
+            }
+            """
+        )
+    )
+    context.add(context.bind(ServiceManager)())
+    App.launch(disable_arg_parse=True, context=context)
+
+    b, c = context.get(ModuleDummy.ServiceB), context.get(ModuleDummy.ServiceC)
+    assert b.config["name"] == "Service B"
+    assert c.config["name"] == "Service C"
