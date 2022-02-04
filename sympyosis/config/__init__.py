@@ -1,1 +1,1 @@
-from sympyosis.config.config import Config
+from sympyosis.config.config import Config, ServiceConfig
