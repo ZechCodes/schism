@@ -9,10 +9,10 @@ from sympyosis.services.service_manager import ServiceManager
 
 
 class ConfigTester(Config):
-    @contextmanager
-    def _get_config_file(self):
-        yield StringIO(
-            """
+    def __init__(self, config=None):
+        self.data = (
+            config
+            or """
             {
                 "services": [
                     {"name": "Service A", "interface": "A.service_a:ServiceA"},
@@ -21,6 +21,11 @@ class ConfigTester(Config):
             }
             """
         )
+        super().__init__()
+
+    @contextmanager
+    def _get_config_file(self):
+        yield StringIO(self.data)
 
 
 class ModuleDummy:
@@ -36,6 +41,10 @@ class ModuleDummy:
         def __init__(self):
             self.ran += 1
 
+    @detect_dependencies
+    class ServiceC(AutoInject):
+        service_b: "ModuleDummy.ServiceB"
+
 
 @detect_dependencies
 class ServiceTester(Service):
@@ -50,7 +59,6 @@ class ServiceManager(ServiceManager):
 
 def test_config_services():
     context = Context()
-    print(id(context))
     context.add(context.bind(ConfigTester)())
     context.add(context.bind(ServiceManager)())
     App.launch(disable_arg_parse=True, context=context)
@@ -60,3 +68,25 @@ def test_config_services():
     assert a is not b
     assert a.ran == 1
     assert b.ran == 1
+
+
+def test_service_interdependency():
+    context = Context()
+    context.add(
+        context.bind(ConfigTester)(
+            """
+            {
+                "services": [
+                    {"name": "Service B", "interface": "B.service_b:ServiceB"},
+                    {"name": "Service C", "interface": "C.service_c:ServiceC"}
+                ]
+            }
+            """
+        )
+    )
+    context.add(context.bind(ServiceManager)())
+    App.launch(disable_arg_parse=True, context=context)
+
+    b, c = context.get(ModuleDummy.ServiceB), context.get(ModuleDummy.ServiceC)
+    assert c.service_b is b
+    assert c.__bevy_context__ is not context
