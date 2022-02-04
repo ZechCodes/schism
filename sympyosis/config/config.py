@@ -3,6 +3,7 @@ from collections.abc import Mapping
 from contextlib import contextmanager
 from io import TextIOBase
 from pathlib import Path
+from sympyosis.config.service import ServiceConfig
 from sympyosis.exceptions import BaseSympyosisException
 from sympyosis.options import Options
 from typing import Any, Generator, Iterator
@@ -11,26 +12,6 @@ import json
 
 class SympyosisConfigFileNotFound(BaseSympyosisException):
     """This exception is raised when the Sympyosis config manager cannot find the config file."""
-
-
-class ServiceConfig(Mapping):
-    def __init__(self, config_data: dict[str, Any]):
-        self._config_data = config_data
-
-    def __contains__(self, item: str) -> bool:
-        return item in self._config_data
-
-    def __getitem__(self, item: str) -> Any:
-        return self._config_data[item]
-
-    def __iter__(self) -> Iterator[Any]:
-        return iter(self._config_data)
-
-    def __len__(self) -> int:
-        return len(self._config_data)
-
-    def __repr__(self):
-        return f"{type(self).__name__}({self._config_data})"
 
 
 @detect_dependencies
