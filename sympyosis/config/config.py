@@ -18,15 +18,14 @@ class SympyosisConfigFileNotFound(BaseSympyosisException):
 class Config(AutoInject, Mapping):
     options: Options
 
-    sympyosis_path_key = "SYMPYOSIS_PATH"
-    sympyosis_config_file_name_key = "SYMPYOSIS_CONFIG_FILE_NAME"
     sympyosis_default_config_file_name = "sympyosis.config.json"
     sympyosis_service_config_section_key = "services"
     sympyosis_service_name_key = "name"
 
     def __init__(self, config_file_name: str | None = None):
         self._file_name = config_file_name or self.options.get(
-            self.sympyosis_config_file_name_key, self.sympyosis_default_config_file_name
+            self.options.sympyosis_config_file_name_envvar,
+            self.sympyosis_default_config_file_name,
         )
         self._config = self._load_config()
         self._service_configs: dict[str, ServiceConfig] = {}
@@ -59,14 +58,16 @@ class Config(AutoInject, Mapping):
 
     @contextmanager
     def _get_config_file(self) -> Generator[None, TextIOBase, None]:
-        file_path = Path(self.options[self.sympyosis_path_key]) / self._file_name
+        file_path = (
+            Path(self.options[self.options.sympyosis_path_envvar]) / self._file_name
+        )
         if not file_path.exists():
             raise SympyosisConfigFileNotFound(
-                f"Could not find the Sympyosis config file. Checked the {self.sympyosis_path_key} "
-                f"({self.options[self.sympyosis_path_key]}) for {self._file_name!r}. Make sure that the "
-                f"{self.sympyosis_path_key} and {self.sympyosis_config_file_name_key} environment variables are "
-                f"correct. When not set the path will use the current working directory and the filename will default "
-                f"to {self.sympyosis_default_config_file_name!r}."
+                f"Could not find the Sympyosis config file.\n- Checked the {self.options.sympyosis_path_envvar} "
+                f"({self.options[self.options.sympyosis_path_envvar]}) for a {self._file_name!r} file.\n\nMake sure "
+                f"that the {self.options.sympyosis_path_envvar} and {self.options.sympyosis_config_file_name_envvar} "
+                f"environment variables are correct. When not set the path will use the current working directory and "
+                f"the filename will default to {self.sympyosis_default_config_file_name!r}."
             )
 
         with file_path.open("r") as file:
