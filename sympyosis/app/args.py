@@ -31,7 +31,7 @@ def add_option_args(parser: argparse.ArgumentParser):
         "--logger-name",
         dest="SYMPYOSIS_LOGGER_NAME",
         nargs="?",
-        default="ERROR",
+        default="Sympyosis",
         help="The name to show in the logs",
     )
 
