@@ -16,6 +16,8 @@ class ServiceManager(AutoInject):
         self._services: dict[str, InterfaceProviderProtocol] = {}
 
     async def start(self):
+        self._create_services()
+    def _create_services(self):
         for config in self.config.services.values():
             service = self.service_builder(config)
             self.log.info(f"Creating {service.name!r} service")
