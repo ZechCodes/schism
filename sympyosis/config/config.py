@@ -60,7 +60,7 @@ class Config(AutoInject, Mapping):
     def _get_config_file(self) -> Generator[None, TextIOBase, None]:
         file_path = (
             Path(self.options[self.options.sympyosis_path_envvar]) / self._file_name
-        )
+        ).resolve()
         if not file_path.exists():
             raise SympyosisConfigFileNotFound(
                 f"Could not find the Sympyosis config file.\n- Checked the {self.options.sympyosis_path_envvar} "
