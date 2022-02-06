@@ -1,6 +1,7 @@
 from __future__ import annotations
 from bevy import AutoInject, detect_dependencies
 from sympyosis.config import ServiceConfig
+from sympyosis.logger import Logger
 from sympyosis.exceptions import BaseSympyosisException
 from sympyosis.services.interface_provider import InterfaceProvider
 from importlib import import_module
@@ -22,6 +23,8 @@ class SympyosisMissingInterfaceConfig(BaseSympyosisException):
 
 @detect_dependencies
 class Service(AutoInject):
+    log: Logger
+
     def __init__(self, config: ServiceConfig):
         self._config = config
         self._interface = None
@@ -39,6 +42,7 @@ class Service(AutoInject):
         return self._interface
 
     def create_interface(self) -> InterfaceProvider:
+        self.log.debug(f"Creating service interface for {self.name!r}")
         service_context = self.__bevy_context__.branch()
         service_context.add(self._config)
         service_context.add(self.log.create_child_logger(self.name))
