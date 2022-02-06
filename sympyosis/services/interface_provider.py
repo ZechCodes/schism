@@ -1,5 +1,5 @@
 from typing import Protocol
 
 
-class InterfaceProvider(Protocol):
+class InterfaceProviderProtocol(Protocol):
     """Protocol that all interface providers need to implement."""

@@ -3,7 +3,7 @@ from bevy import AutoInject, detect_dependencies
 from sympyosis.config import ServiceConfig
 from sympyosis.logger import Logger
 from sympyosis.exceptions import BaseSympyosisException
-from sympyosis.services.interface_provider import InterfaceProvider
+from sympyosis.services.interface_provider import InterfaceProviderProtocol
 from importlib import import_module
 from typing import Type
 from types import ModuleType
@@ -34,14 +34,14 @@ class Service(AutoInject):
         return self._config["name"]
 
     @property
-    def interface(self) -> Type[InterfaceProvider]:
+    def interface(self) -> Type[InterfaceProviderProtocol]:
         """This will be class that the service wants made public."""
         if not self._interface:
             self._interface = self._get_service_interface()
 
         return self._interface
 
-    def create_interface(self) -> InterfaceProvider:
+    def create_interface(self) -> InterfaceProviderProtocol:
         self.log.debug(f"Creating service interface for {self.name!r}")
         service_context = self.__bevy_context__.branch()
         service_context.add(self._config)
@@ -62,7 +62,7 @@ class Service(AutoInject):
                 f"import dot path in the Sympyosis config is correct."
             )
 
-    def _get_service_interface(self) -> Type[InterfaceProvider]:
+    def _get_service_interface(self) -> Type[InterfaceProviderProtocol]:
         try:
             dot_path, interface = self._config["interface"].split(":")
         except KeyError:

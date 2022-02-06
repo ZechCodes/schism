@@ -3,6 +3,7 @@ from bevy.builder import Builder
 from sympyosis.config import Config
 from sympyosis.logger import Logger
 from sympyosis.services import Service
+from sympyosis.services.interface_provider import InterfaceProviderProtocol
 
 
 @detect_dependencies
