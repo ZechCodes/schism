@@ -45,7 +45,9 @@ class Service(AutoInject):
         self.log.debug(f"Creating service interface for {self.name!r}")
         service_context = self.__bevy_context__.branch()
         service_context.add(self._config)
-        service_context.add(self.log.create_child_logger(self.name))
+        service_context.add(
+            self.log.create_child_logger(self.name, self._config.get("log_level", None))
+        )
         interface = service_context.bind(self.interface)()
         self.__bevy_context__.add(interface)
         return interface

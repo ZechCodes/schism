@@ -55,11 +55,9 @@ class Logger:
         self._level = level
         self._logger.setLevel(level)
 
-    def create_child_logger(self, name: str):
-        return Logger(name, self._level, parent=self._logger)
+    def create_child_logger(self, name: str, level: LogLevel | None = None):
+        return Logger(name, self._level, parent=level or self._logger)
 
     @staticmethod
     def initialize_loggers(level: LogLevel = LogLevel.ERROR):
-        logging.basicConfig(
-            level=level,
-        )
+        logging.basicConfig(level=level)
