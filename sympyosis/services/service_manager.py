@@ -1,9 +1,14 @@
 from bevy import AutoInject, detect_dependencies
 from bevy.builder import Builder
 from sympyosis.config import Config
+from sympyosis.exceptions import BaseSympyosisException
 from sympyosis.logger import Logger
 from sympyosis.services import Service
 from sympyosis.services.interface_provider import InterfaceProviderProtocol
+
+
+class SympyosisUnableToFindStartCoroutine(BaseSympyosisException):
+    """Raised when Sympyosis cannot find the start coroutine on a service's interface."""
 
 
 @detect_dependencies
