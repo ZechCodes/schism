@@ -1,7 +1,7 @@
 import argparse
 
 
-def add_option_args(parser):
+def add_option_args(parser: argparse.ArgumentParser):
     parser.add_argument(
         "--config",
         "-c",
@@ -30,7 +30,7 @@ def create_parser():
     return parser
 
 
-def create_service_args(parser):
+def create_service_args(parser: argparse.ArgumentParser):
     sub_parsers = parser.add_subparsers(help="Launch a service")
     service_parser = sub_parsers.add_parser("service")
     service_parser.add_argument(
