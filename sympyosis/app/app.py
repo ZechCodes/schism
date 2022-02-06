@@ -10,10 +10,16 @@ import asyncio
 @detect_dependencies
 class App(AutoInject):
     config: Config
+    log: Logger
     service_manager: ServiceManager
 
     def run(self):
+        try:
         asyncio.run(self.service_manager.start())
+        except KeyboardInterrupt:
+            print("\n\nGoodbye!")
+        finally:
+            self.log.debug("Sympyosis has shutdown")
 
     @classmethod
     def launch(
