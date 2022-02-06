@@ -57,6 +57,10 @@ class Service(AutoInject):
         try:
             return import_module(dot_path, package)
         except ImportError:
+            self.log.error(
+                f"Could not import {self.name!r} service's interface. Attempted to import the module {dot_path!r} from "
+                f"the {package!r} package."
+            )
             raise SympyosisUnableToImportService(
                 f"Failed to import the {dot_path} service. Make sure it is on the Python path and that the interface "
                 f"import dot path in the Sympyosis config is correct."
@@ -74,9 +78,15 @@ class Service(AutoInject):
             )
 
         module = self._import_service_interface_module(dot_path)
+        self.log.debug(
+            f"Imported {self.name!r} service's interface module at {dot_path!r}."
+        )
         try:
             return getattr(module, interface)
         except AttributeError:
+            self.log.error(
+                f"Failed to get the {self.name!r} service's interface {interface!r} from {dot_path!r}."
+            )
             raise SympyosisUnableToFindServiceInterface(
                 f"Failed to get the service interface {interface!r} from {dot_path}. Make sure that the interface "
                 f"class name in the Sympyosis config is correct."
