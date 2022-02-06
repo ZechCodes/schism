@@ -12,11 +12,11 @@ class ServiceManager(AutoInject):
     log: Logger
     service_builder: Builder[Service]
 
-    def start(self):
-        self._start_services()
+    def __init__(self):
+        self._services: dict[str, InterfaceProviderProtocol] = {}
 
     def _start_services(self):
         for config in self.config.services.values():
             service = self.service_builder(config)
             self.log.info(f"Creating {service.name!r} service")
-            service.create_interface()
+            self._services[service.name] = service.create_interface()
