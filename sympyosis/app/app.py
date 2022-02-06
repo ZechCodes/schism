@@ -37,5 +37,7 @@ class App(AutoInject):
         log_level = LogLevel.get(options.get("SYMPYOSIS_LOGGER_LEVEL", "ERROR"))
         logger = Logger(options.get("SYMPYOSIS_LOGGER_NAME", "Sympyosis"), log_level)
         context.add(logger)
+
+        logger.info("Starting Sympyosis")
         app = context.bind(cls)()
         asyncio.run(app.run())
