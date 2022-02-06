@@ -12,8 +12,8 @@ class App(AutoInject):
     config: Config
     service_manager: ServiceManager
 
-    async def run(self):
-        self.service_manager.start()
+    def run(self):
+        asyncio.run(self.service_manager.start())
 
     @classmethod
     def launch(
@@ -40,4 +40,5 @@ class App(AutoInject):
 
         logger.info("Starting Sympyosis")
         app = context.bind(cls)()
-        asyncio.run(app.run())
+
+        app.run()
