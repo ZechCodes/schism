@@ -15,7 +15,7 @@ class App(AutoInject):
 
     def run(self):
         try:
-        asyncio.run(self.service_manager.start())
+            asyncio.run(self.service_manager.start())
         except KeyboardInterrupt:
             print("\n\nGoodbye!")
         finally:
