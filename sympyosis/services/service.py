@@ -41,6 +41,7 @@ class Service(AutoInject):
     def create_interface(self) -> InterfaceProvider:
         service_context = self.__bevy_context__.branch()
         service_context.add(self._config)
+        service_context.add(self.log.create_child_logger(self.name))
         interface = service_context.bind(self.interface)()
         self.__bevy_context__.add(interface)
         return interface
