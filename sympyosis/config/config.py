@@ -4,6 +4,7 @@ from contextlib import contextmanager
 from io import TextIOBase
 from pathlib import Path
 from sympyosis.config.service import ServiceConfig
+from sympyosis.logger import Logger
 from sympyosis.exceptions import BaseSympyosisException
 from sympyosis.options import Options
 from typing import Any, Generator, Iterator
@@ -16,6 +17,7 @@ class SympyosisConfigFileNotFound(BaseSympyosisException):
 
 @detect_dependencies
 class Config(AutoInject, Mapping):
+    log: Logger
     options: Options
 
     sympyosis_default_config_file_name = "sympyosis.config.json"
@@ -62,6 +64,7 @@ class Config(AutoInject, Mapping):
             Path(self.options[self.options.sympyosis_path_envvar]) / self._file_name
         ).resolve()
         if not file_path.exists():
+            self.log.critical(f"Could not find log file: {file_path}")
             raise SympyosisConfigFileNotFound(
                 f"Could not find the Sympyosis config file.\n- Checked the {self.options.sympyosis_path_envvar} "
                 f"({self.options[self.options.sympyosis_path_envvar]}) for a {self._file_name!r} file.\n\nMake sure "
@@ -70,5 +73,6 @@ class Config(AutoInject, Mapping):
                 f"the filename will default to {self.sympyosis_default_config_file_name!r}."
             )
 
+        self.log.info(f"Opening config file: {file_path}")
         with file_path.open("r") as file:
             yield file
