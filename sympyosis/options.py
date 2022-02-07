@@ -23,7 +23,9 @@ class Options:
 
     def _build_options(self, options: dict[str, Any]) -> dict[str, Any]:
         return (
-            {self.sympyosis_path_envvar: self._get_path()} | self._load_env() | options
+            {self.sympyosis_path_envvar: self._get_path()}
+            | self._load_env()
+            | self._map_options(options)
         )
 
     def _get_path(self):
@@ -34,4 +36,15 @@ class Options:
             key: value
             for key, value in os.environ.items()
             if key.startswith(self.sympyosis_envvar_prefix)
+        }
+
+    def _map_options(self, options: dict[str, Any]) -> dict[str, Any]:
+        mapping = {
+            "path": self.sympyosis_path_envvar,
+            "config": self.sympyosis_config_file_name_envvar,
+        }
+        return {
+            mapping.get(key, key): value
+            for key, value in options.items()
+            if value is not None
         }
