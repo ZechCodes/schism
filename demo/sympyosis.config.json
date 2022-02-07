@@ -2,11 +2,11 @@
   "services": [
     {
       "name": "admin",
-      "interface": "admin.interface:AdminAPI"
+      "interface": "demo.admin.interface:AdminAPI"
     },
     {
       "name": "blog",
-      "interface": "blog.interface:BlogAPI"
+      "interface": "demo.blog.interface:BlogAPI"
     }
   ]
 }
