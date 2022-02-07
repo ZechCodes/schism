@@ -8,6 +8,8 @@ class Options:
     sympyosis_envvar_prefix = "SYMPYOSIS"
     sympyosis_path_envvar = f"{sympyosis_envvar_prefix}_PATH"
     sympyosis_config_file_name_envvar = f"{sympyosis_envvar_prefix}_CONFIG_FILE_NAME"
+    sympyosis_logger_level_envvar = f"{sympyosis_envvar_prefix}_LOGGER_LEVEL"
+    sympyosis_logger_name_envvar = f"{sympyosis_envvar_prefix}_LOGGER_NAME"
 
     def __init__(self, **options):
         self._options = self._build_options(options)
@@ -42,6 +44,8 @@ class Options:
         mapping = {
             "path": self.sympyosis_path_envvar,
             "config": self.sympyosis_config_file_name_envvar,
+            "log_level": self.sympyosis_logger_level_envvar,
+            "logger_name": self.sympyosis_logger_name_envvar,
         }
         return {
             mapping.get(key, key): value

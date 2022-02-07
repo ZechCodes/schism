@@ -21,17 +21,15 @@ def add_option_args(parser: argparse.ArgumentParser):
     parser.add_argument(
         "--log-level",
         "-l",
-        dest="SYMPYOSIS_LOGGER_LEVEL",
         nargs="?",
-        default="ERROR",
+        default=None,
         help="The log level to use",
     )
 
     parser.add_argument(
         "--logger-name",
-        dest="SYMPYOSIS_LOGGER_NAME",
         nargs="?",
-        default="Sympyosis",
+        default=None,
         help="The name to show in the logs",
     )
 
