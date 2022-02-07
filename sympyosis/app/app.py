@@ -40,8 +40,12 @@ class App(AutoInject):
         context.add(options)
 
         Logger.initialize_loggers()
-        log_level = LogLevel.get(options.get("SYMPYOSIS_LOGGER_LEVEL", "ERROR"))
-        logger = Logger(options.get("SYMPYOSIS_LOGGER_NAME", "Sympyosis"), log_level)
+        log_level = LogLevel.get(
+            options.get(options.sympyosis_logger_level_envvar, "ERROR")
+        )
+        logger = Logger(
+            options.get(options.sympyosis_logger_name_envvar, "Sympyosis"), log_level
+        )
         context.add(logger)
 
         logger.info("Starting Sympyosis")
