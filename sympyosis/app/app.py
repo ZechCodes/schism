@@ -47,6 +47,7 @@ class App(AutoInject):
 
     @staticmethod
     def create_logger(options: Options) -> Logger:
+        """Creates an logger logger using the options passed into the application."""
         name = options.get(options.logger_name_option_name, "Sympyosis")
         level = LogLevel.get(options.get(options.logger_level_option_name, "ERROR"))
 
