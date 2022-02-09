@@ -15,8 +15,8 @@ def test_db_version():
 
 def test_get_processes():
     db = MemoryDB()
-    db.add_process("Test 1", 0, ProcessStatus.STOPPED)
-    db.add_process("Test 2", 1, ProcessStatus.RUNNING)
+    db.add_process("Test 1", 0, 8080, ProcessStatus.STOPPED)
+    db.add_process("Test 2", 1, 8081, ProcessStatus.RUNNING)
 
     assert len(db.get_processes()) == 2
     assert len(db.get_processes(ProcessStatus.RUNNING)) == 1
@@ -24,7 +24,7 @@ def test_get_processes():
 
 def test_delete_processes():
     db = MemoryDB()
-    db.add_process("Test 1", 0, ProcessStatus.RUNNING)
+    db.add_process("Test 1", 0, 8080, ProcessStatus.RUNNING)
 
     process = db.get_processes()[0]
     assert process.status == ProcessStatus.RUNNING
