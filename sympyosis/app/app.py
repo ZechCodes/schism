@@ -4,6 +4,7 @@ from sympyosis.config import Config
 from sympyosis.logger import Logger, LogLevel
 from sympyosis.options import Options
 from sympyosis.services import ServiceManager
+from typing import Any
 import asyncio
 
 
@@ -31,24 +32,31 @@ class App(AutoInject):
     ):
         context = context or Context()
 
-        args = {}
-        if not disable_arg_parse:
-            parser = get_arg_parser()
-            args = parser.parse_args(cli_args.split() if cli_args else None).__dict__
+        args = {} if disable_arg_parse else cls.get_cli_input(cli_args)
+        options = Options(**args) >> context
 
-        options = Options(**args)
-        context.add(options)
-
-        Logger.initialize_loggers()
-        log_level = LogLevel.get(
+        logger_name = (options.get(options.sympyosis_logger_name_envvar, "Sympyosis"),)
+        logger_level = LogLevel.get(
             options.get(options.sympyosis_logger_level_envvar, "ERROR")
         )
-        logger = Logger(
-            options.get(options.sympyosis_logger_name_envvar, "Sympyosis"), log_level
-        )
-        context.add(logger)
+        logger = logger(cls.create_logger(logger_name, logger_level)) >> context
 
         logger.info("Starting Sympyosis")
-        app = context.bind(cls)()
+        app = cls @ context
 
         app.run()
+
+    @staticmethod
+    def get_cli_input(cli_args: str | None = None) -> dict[str, Any]:
+        """Processes CLI input to create a dictionary of options that the app should use."""
+        parser = get_arg_parser()
+        input_args = cli_args.split() if cli_args else None
+        return {
+            key: dict(value) if key == "options" else value
+            for key, value in parser.parse_args(input_args).__dict__.items()
+        }
+
+    @staticmethod
+    def create_logger(name: str, level: LogLevel) -> Logger:
+        Logger.initialize_loggers()
+        logger = Logger(name, level)
