@@ -10,7 +10,7 @@ import asyncio
 
 
 @detect_dependencies
-class ServiceManager(AutoInject):
+class MonolithManager(AutoInject):
     config: Config
     log: Logger
     service_builder: Builder[Service]
