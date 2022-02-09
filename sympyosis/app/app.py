@@ -51,10 +51,8 @@ class App(AutoInject):
         """Processes CLI input to create a dictionary of options that the app should use."""
         parser = get_arg_parser()
         input_args = cli_args.split() if cli_args else None
-        return {
-            key: dict(value) if key == "options" else value
-            for key, value in parser.parse_args(input_args).__dict__.items()
-        }
+        args = parser.parse_args(input_args).__dict__
+        return args | dict(args.pop("option"))
 
     @staticmethod
     def create_logger(name: str, level: LogLevel) -> Logger:
