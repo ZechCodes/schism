@@ -26,7 +26,7 @@ class Config(AutoInject, Mapping):
 
     def __init__(self, config_file_name: str | None = None):
         self._file_name = config_file_name or self.options.get(
-            self.options.sympyosis_config_file_name_envvar,
+            self.options.config_file_name_option_name,
             self.sympyosis_default_config_file_name,
         )
         self._config = self._load_config()
@@ -61,14 +61,14 @@ class Config(AutoInject, Mapping):
     @contextmanager
     def _get_config_file(self) -> Generator[None, TextIOBase, None]:
         file_path = (
-            Path(self.options[self.options.sympyosis_path_envvar]) / self._file_name
+            Path(self.options[self.options.path_option_name]) / self._file_name
         ).resolve()
         if not file_path.exists():
             self.log.critical(f"Could not find log file: {file_path}")
             raise SympyosisConfigFileNotFound(
-                f"Could not find the Sympyosis config file.\n- Checked the {self.options.sympyosis_path_envvar} "
-                f"({self.options[self.options.sympyosis_path_envvar]}) for a {self._file_name!r} file.\n\nMake sure "
-                f"that the {self.options.sympyosis_path_envvar} and {self.options.sympyosis_config_file_name_envvar} "
+                f"Could not find the Sympyosis config file.\n- Checked the {self.options.path_option_name} "
+                f"({self.options[self.options.path_option_name]}) for a {self._file_name!r} file.\n\nMake sure "
+                f"that the {self.options.path_option_name} and {self.options.config_file_name_option_name} "
                 f"environment variables are correct. When not set the path will use the current working directory and "
                 f"the filename will default to {self.sympyosis_default_config_file_name!r}."
             )

@@ -35,9 +35,9 @@ class App(AutoInject):
         args = {} if disable_arg_parse else cls.get_cli_input(cli_args)
         options = Options(**args) >> context
 
-        logger_name = (options.get(options.sympyosis_logger_name_envvar, "Sympyosis"),)
+        logger_name = (options.get(options.logger_name_option_name, "Sympyosis"),)
         logger_level = LogLevel.get(
-            options.get(options.sympyosis_logger_level_envvar, "ERROR")
+            options.get(options.logger_level_option_name, "ERROR")
         )
         logger = logger(cls.create_logger(logger_name, logger_level)) >> context
 
