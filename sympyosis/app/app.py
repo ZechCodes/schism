@@ -41,12 +41,11 @@ class App(AutoInject):
         args = {} if disable_arg_parse else cls.get_cli_input(cli_args)
         options = Options(**args)
 
-        context = Context.new(context)
-        (
-            context
+        context = (
+            Context.new(context)
             << options
             << cls.create_logger(options)
-            << cls.get_service_manager_class(options) @ context
+            << cls.get_service_manager_class(options) @ Context
         )
         (cls @ context).run()
 
