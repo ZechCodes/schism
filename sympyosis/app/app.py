@@ -39,7 +39,7 @@ class App(AutoInject):
         logger_level = LogLevel.get(
             options.get(options.logger_level_option_name, "ERROR")
         )
-        logger = logger(cls.create_logger(logger_name, logger_level)) >> context
+        logger = cls.create_logger(logger_name, logger_level) >> context
 
         logger.info("Starting Sympyosis")
         app = cls @ context
@@ -59,4 +59,4 @@ class App(AutoInject):
     @staticmethod
     def create_logger(name: str, level: LogLevel) -> Logger:
         Logger.initialize_loggers()
-        logger = Logger(name, level)
+        return Logger(name, level)
