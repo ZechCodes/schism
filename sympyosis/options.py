@@ -6,10 +6,10 @@ class Options:
     """The options object aggregates all options values that the Sympyosis application pulls in from the environment."""
 
     envvar_prefix = "SYMPYOSIS"
-    path_option_name = f"PATH"
-    config_file_option_name = f"CONFIG_FILE"
-    logger_level_option_name = f"LOGGER_LEVEL"
-    logger_name_option_name = f"LOGGER_NAME"
+    path_option_name = "PATH"
+    config_file_option_name = "CONFIG_FILE"
+    logger_level_option_name = "LOGGER_LEVEL"
+    logger_name_option_name = "LOGGER_NAME"
 
     def __init__(self, **options):
         self._cli_options = self._map_options(options)
