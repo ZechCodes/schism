@@ -12,7 +12,8 @@ class Options:
     logger_name_option_name = f"LOGGER_NAME"
 
     def __init__(self, **options):
-        self._options = self._build_options(options)
+        self._cli_options = self._map_options(options)
+        self._options = self._build_options()
 
     def __getitem__(self, item: str) -> Any:
         return self._options[item]
@@ -23,11 +24,11 @@ class Options:
     def get(self, item: str, default: Any | None = None) -> Any | None:
         return self._options.get(item, default)
 
-    def _build_options(self, options: dict[str, Any]) -> dict[str, Any]:
+    def _build_options(self) -> dict[str, Any]:
         return (
             {self.path_option_name: self._get_path()}
             | self._load_env()
-            | self._map_options(options)
+            | self._cli_options
         )
 
     def _get_path(self):
