@@ -15,6 +15,7 @@ class App(AutoInject):
     service_manager: ServiceManager
 
     def run(self):
+        self.log.info("Sympyosis is starting")
         try:
             asyncio.run(self.service_manager.start())
         except KeyboardInterrupt:
