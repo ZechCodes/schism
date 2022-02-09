@@ -28,23 +28,13 @@ class App(AutoInject):
         cli_args: str | None = None,
         *,
         disable_arg_parse: bool = False,
-        context: Context | None = None
+        context: Context | None = None,
     ):
-        context = context or Context()
-
         args = {} if disable_arg_parse else cls.get_cli_input(cli_args)
-        options = Options(**args) >> context
+        options = Options(**args)
 
-        logger_name = options.get(options.logger_name_option_name, "Sympyosis")
-        logger_level = LogLevel.get(
-            options.get(options.logger_level_option_name, "ERROR")
-        )
-        logger = cls.create_logger(logger_name, logger_level) >> context
-
-        logger.info("Starting Sympyosis")
-        app = cls @ context
-
-        app.run()
+        context = (context or Context()) << options << cls.create_logger(options)
+        (cls @ context).run()
 
     @staticmethod
     def get_cli_input(cli_args: str | None = None) -> dict[str, Any]:
@@ -55,6 +45,9 @@ class App(AutoInject):
         return args | dict(args.pop("option"))
 
     @staticmethod
-    def create_logger(name: str, level: LogLevel) -> Logger:
+    def create_logger(options: Options) -> Logger:
+        name = options.get(options.logger_name_option_name, "Sympyosis")
+        level = LogLevel.get(options.get(options.logger_level_option_name, "ERROR"))
+
         Logger.initialize_loggers()
         return Logger(name, level)
