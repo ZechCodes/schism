@@ -46,7 +46,6 @@ class Options:
             "path": self.path_option_name,
             "config": self.config_file_name_option_name,
             "log_level": self.logger_level_option_name,
-            "logger_name": self.logger_name_option_name,
         }
         return {
             mapping.get(key, key): value
