@@ -1,10 +1,12 @@
 from bevy import AutoInject, Context, detect_dependencies
+from importlib import import_module
 from sympyosis.app.args import get_arg_parser
 from sympyosis.config import Config
 from sympyosis.logger import Logger, LogLevel
 from sympyosis.options import Options
 from sympyosis.services import ServiceManager
-from typing import Any
+from sympyosis.services.monolith_manager import MonolithManager
+from typing import Any, Type
 import asyncio
 
 
@@ -14,8 +16,13 @@ class App(AutoInject):
     log: Logger
     service_manager: ServiceManager
 
+    default_service_manager = "sympyosis.services.monolith_manager:MonolithManager"
+
     def run(self):
         self.log.info("Sympyosis is starting")
+        self.log.debug(
+            f"Using {type(self.service_manager).__module__}.{type(self.service_manager).__name__} as the service manager"
+        )
         try:
             asyncio.run(self.service_manager.start())
         except KeyboardInterrupt:
@@ -34,7 +41,13 @@ class App(AutoInject):
         args = {} if disable_arg_parse else cls.get_cli_input(cli_args)
         options = Options(**args)
 
-        context = Context.new(context) << options << cls.create_logger(options)
+        context = Context.new(context)
+        (
+            context
+            << options
+            << cls.create_logger(options)
+            << cls.get_service_manager_class(options) @ context
+        )
         (cls @ context).run()
 
     @staticmethod
@@ -53,3 +66,12 @@ class App(AutoInject):
 
         Logger.initialize_loggers()
         return Logger(name, level)
+
+    @classmethod
+    def get_service_manager_class(cls, options: Options) -> Type[ServiceManager]:
+        """Imports the service manager module and gets the specified class from the options."""
+        dot_path, class_name = options.get(
+            options.service_mananger_option_name, cls.default_service_manager
+        ).split(":")
+        module = import_module(dot_path)
+        return getattr(module, class_name)
