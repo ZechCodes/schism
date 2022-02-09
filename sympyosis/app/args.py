@@ -73,7 +73,7 @@ def create_service_args(parser: argparse.ArgumentParser):
     add_option_args(service_parser)
 
 
-def get_arg_parser():
+def get_arg_parser() -> argparse.ArgumentParser:
     parser = create_parser()
     add_option_args(parser)
     create_service_args(parser)
