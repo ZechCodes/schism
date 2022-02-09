@@ -5,7 +5,7 @@ from io import StringIO
 from sympyosis.app.app import App
 from sympyosis.config.config import Config, ServiceConfig
 from sympyosis.services.service import Service
-from sympyosis.services.service_manager import ServiceManager
+from sympyosis.services.managers import ServiceManager
 
 
 class ConfigTester(Config):
