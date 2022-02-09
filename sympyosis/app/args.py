@@ -26,6 +26,15 @@ def add_option_args(parser: argparse.ArgumentParser):
         help="The log level to use",
     )
 
+    parser.add_argument(
+        "--option",
+        "-o",
+        nargs=2,
+        action="append",
+        default=[],
+        help="Custom option values that the app should use",
+    )
+
 
 def create_parser():
     parser = argparse.ArgumentParser(
