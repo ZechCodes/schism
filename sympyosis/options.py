@@ -7,7 +7,7 @@ class Options:
 
     envvar_prefix = "SYMPYOSIS"
     path_option_name = f"PATH"
-    config_file_name_option_name = f"CONFIG_FILE_NAME"
+    config_file_option_name = f"CONFIG_FILE"
     logger_level_option_name = f"LOGGER_LEVEL"
     logger_name_option_name = f"LOGGER_NAME"
 
@@ -45,7 +45,7 @@ class Options:
     def _map_options(self, options: dict[str, Any]) -> dict[str, Any]:
         mapping = {
             "path": self.path_option_name,
-            "config": self.config_file_name_option_name,
+            "config": self.config_file_option_name,
             "log_level": self.logger_level_option_name,
         }
         return {

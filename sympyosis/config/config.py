@@ -20,15 +20,12 @@ class Config(AutoInject, Mapping):
     log: Logger
     options: Options
 
-    sympyosis_default_config_file_name = "sympyosis.config.json"
-    sympyosis_service_config_section_key = "services"
-    sympyosis_service_name_key = "name"
+    default_config_file_name = "sympyosis.config.json"
+    service_config_section_key = "services"
+    service_name_key = "name"
 
-    def __init__(self, config_file_name: str | None = None):
-        self._file_name = config_file_name or self.options.get(
-            self.options.config_file_name_option_name,
-            self.sympyosis_default_config_file_name,
-        )
+    def __init__(self, config_file: str | None = None):
+        self._file_path = self._create_config_file_path(config_file)
         self._config = self._load_config()
         self._service_configs: dict[str, ServiceConfig] = {}
 
@@ -48,11 +45,21 @@ class Config(AutoInject, Mapping):
     def services(self) -> dict[str, ServiceConfig]:
         if not self._service_configs:
             self._service_configs = {
-                data[self.sympyosis_service_name_key]: ServiceConfig(data)
-                for data in self.get(self.sympyosis_service_config_section_key, [])
+                data[self.service_name_key]: ServiceConfig(data)
+                for data in self.get(self.service_config_section_key, [])
             }
 
         return self._service_configs
+
+    def _create_config_file_path(self, config_file: str | None) -> Path:
+        if config_file:
+            return Path(config_file).resolve()
+
+        if config_file := self.options.get(self.options.config_file_option_name):
+            return Path(config_file).resolve()
+
+        path = Path(self.options[self.options.path_option_name])
+        return path / self.default_config_file_name
 
     def _load_config(self):
         with self._get_config_file() as file:
@@ -60,19 +67,15 @@ class Config(AutoInject, Mapping):
 
     @contextmanager
     def _get_config_file(self) -> Generator[None, TextIOBase, None]:
-        file_path = (
-            Path(self.options[self.options.path_option_name]) / self._file_name
-        ).resolve()
-        if not file_path.exists():
-            self.log.critical(f"Could not find log file: {file_path}")
+        if not self._file_path.exists():
+            self.log.critical(f"Could not find log file: {self._file_path}")
             raise SympyosisConfigFileNotFound(
-                f"Could not find the Sympyosis config file.\n- Checked the {self.options.path_option_name} "
-                f"({self.options[self.options.path_option_name]}) for a {self._file_name!r} file.\n\nMake sure "
-                f"that the {self.options.path_option_name} and {self.options.config_file_name_option_name} "
-                f"environment variables are correct. When not set the path will use the current working directory and "
-                f"the filename will default to {self.sympyosis_default_config_file_name!r}."
+                f"Could not find the Sympyosis config file.\n- Attempted to load {self._file_path!r}.\n\nMake sure "
+                f"that the {self.options.path_option_name} and {self.options.config_file_option_name} environment "
+                f"variables are correct. When not set the path will use the current working directory and the filename "
+                f"will default to {self.default_config_file_name!r}."
             )
 
-        self.log.info(f"Opening config file: {file_path}")
-        with file_path.open("r") as file:
+        self.log.info(f"Opening config file: {self._file_path}")
+        with self._file_path.open("r") as file:
             yield file
