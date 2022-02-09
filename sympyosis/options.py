@@ -10,6 +10,7 @@ class Options:
     config_file_option_name = "CONFIG_FILE"
     logger_level_option_name = "LOGGER_LEVEL"
     logger_name_option_name = "LOGGER_NAME"
+    service_mananger_option_name = "SERVICE_MANAGER"
 
     def __init__(self, **options):
         self._cli_options = self._map_options(options)
