@@ -26,13 +26,6 @@ def add_option_args(parser: argparse.ArgumentParser):
         help="The log level to use",
     )
 
-    parser.add_argument(
-        "--logger-name",
-        nargs="?",
-        default=None,
-        help="The name to show in the logs",
-    )
-
 
 def create_parser():
     parser = argparse.ArgumentParser(
