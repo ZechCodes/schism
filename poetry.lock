@@ -39,7 +39,7 @@ tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>
 
 [[package]]
 name = "bevy"
-version = "1.0.4"
+version = "1.0.6"
 description = "Python Dependency Inversion made simple so you can focus on creating amazing code."
 category = "main"
 optional = false
@@ -231,7 +231,7 @@ python-versions = ">=3.6"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "3dc5f75b1d6ef31ea4b8162949456c0018085d39c9a029f52771e3e6b59e1048"
+content-hash = "7e06f6ab2bfb2bb4d8a49ec45e18206524f31ecd019ba804e1c558c1627a4346"
 
 [metadata.files]
 anyio = [
@@ -247,8 +247,8 @@ attrs = [
     {file = "attrs-21.4.0.tar.gz", hash = "sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd"},
 ]
 bevy = [
-    {file = "Bevy-1.0.4-py3-none-any.whl", hash = "sha256:aa6e9ae99777ed39ddf9f6100519eff2526719cb5e5cb7e1ec806769be2b71e1"},
-    {file = "Bevy-1.0.4.tar.gz", hash = "sha256:181654cb07ab05dc6a9a6cef3ab4faaeafef7812879868e1c582d6ff69dcab19"},
+    {file = "Bevy-1.0.6-py3-none-any.whl", hash = "sha256:15d501bbc95f1ef585dd70b71b397aba204ab47e989aea13cbbf98f48720f12b"},
+    {file = "Bevy-1.0.6.tar.gz", hash = "sha256:4c4a40f75b18c8c794c36d595821f4b00e098c6b420753ddcd0ec2ae1076189b"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
